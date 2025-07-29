@@ -1,0 +1,22 @@
+{
+  "version": "v2",
+  "content": {
+    "messages": [
+      {
+        "type": "text",
+        "text": "Xin chào! Đang xử lý yêu cầu của bạn..."
+      }
+    ],
+    "actions": [
+      {
+        "action": "external_request",
+        "url": "YOUR_MAKE_WEBHOOK_URL",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"user_id\": \"{{user_id}}\", \"text\": \"{{last_text_input}}\"}"
+      }
+    ]
+  }
+}
