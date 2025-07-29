@@ -1,0 +1,73 @@
+{
+  "name": "Messenger AI Bot",
+  "modules": [
+    {
+      "id": 1,
+      "type": "webhook",
+      "name": "Receive from ManyChat"
+    },
+    {
+      "id": 2,
+      "type": "http",
+      "name": "Classify Message",
+      "params": {
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer YOUR_OPENROUTER_API_KEY",
+          "Content-Type": "application/json"
+        },
+        "body": "{\"model\":\"openai/gpt-4o-mini\",\"messages\":[{\"role\":\"system\",\"content\":\"Bạn là AI phân loại yêu cầu thành chat, music hoặc image. Trả về JSON: {\\\"action\\\": \\\"chat|music|image\\\"}\"},{\"role\":\"user\",\"content\":\"{{1.text}}\"}]}"
+      }
+    },
+    {
+      "id": 3,
+      "type": "router",
+      "name": "Decide Route"
+    },
+    {
+      "id": 4,
+      "type": "http",
+      "name": "Chat Reply",
+      "params": {
+        "url": "https://your-bot.onrender.com/chat",
+        "method": "POST",
+        "body": "{\"message\":\"{{1.text}}\"}"
+      }
+    },
+    {
+      "id": 5,
+      "type": "http",
+      "name": "Play Music",
+      "params": {
+        "url": "https://your-bot.onrender.com/play-music",
+        "method": "POST",
+        "body": "{\"query\":\"{{1.text}}\",\"voice_lang\":\"vi\"}"
+      }
+    },
+    {
+      "id": 6,
+      "type": "http",
+      "name": "Generate Image",
+      "params": {
+        "url": "https://your-bot.onrender.com/image",
+        "method": "POST",
+        "body": "{\"prompt\":\"{{1.text}}\"}"
+      }
+    },
+    {
+      "id": 7,
+      "type": "http",
+      "name": "Send to ManyChat",
+      "params": {
+        "url": "https://api.manychat.com/fb/sending/sendContent",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer YOUR_MANYCHAT_API_KEY",
+          "Content-Type": "application/json"
+        },
+        "body": "{\"subscriber_id\":\"{{1.user_id}}\",\"messages\":[{\"type\":\"text\",\"text\":\"{{4.response or 5.voice_url or 6.image_url}}\"}]}"
+      }
+    }
+  ]
+}
